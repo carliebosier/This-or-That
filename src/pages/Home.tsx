@@ -120,19 +120,34 @@ export default function Home() {
       return;
     }
 
-    // Check if user already voted
-    const poll = polls.find((p) => p.id === pollId);
-    const existingVote = poll?.votes.find((v) => v.voter_user_id === user.id);
+    // Get current user ID - use auth.uid() which is what RLS policies check
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) {
+      toast({
+        title: t("home.signInRequired"),
+        description: t("home.signInToVote"),
+      });
+      return;
+    }
 
-    if (existingVote) {
+    // Check if user already voted - query directly to ensure we get the user's vote
+    const { data: existingVoteData } = await supabase
+      .from("votes")
+      .select("id, option_id")
+      .eq("poll_id", pollId)
+      .eq("voter_user_id", authUser.id)
+      .maybeSingle();
+
+    if (existingVoteData) {
       // Update existing vote
       const { error } = await supabase
         .from("votes")
         .update({ option_id: optionId })
         .eq("poll_id", pollId)
-        .eq("voter_user_id", user.id);
+        .eq("voter_user_id", authUser.id);
 
       if (error) {
+        console.error("Error updating vote:", error);
         toast({
           title: t("home.error"),
           description: t("home.failedToUpdate"),
@@ -145,10 +160,11 @@ export default function Home() {
       const { error } = await supabase.from("votes").insert({
         poll_id: pollId,
         option_id: optionId,
-        voter_user_id: user.id,
+        voter_user_id: authUser.id,
       });
 
       if (error) {
+        console.error("Error inserting vote:", error);
         toast({
           title: t("home.error"),
           description: t("home.failedToVote"),
