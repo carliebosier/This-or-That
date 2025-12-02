@@ -1,0 +1,91 @@
+{
+  "app": {
+    "title": "Ceci ou Cela"
+  },
+  "header": {
+    "signIn": "Se Connecter",
+    "signOut": "Se Déconnecter",
+    "profile": "Profil"
+  },
+  "home": {
+    "new": "Nouveaux",
+    "top": "Populaires",
+    "noPolls": "Pas encore de sondages. Soyez le premier à en créer un!",
+    "signInRequired": "Connexion requise",
+    "signInToVote": "Veuillez vous connecter pour voter sur les sondages",
+    "signInToCreate": "Veuillez vous connecter pour créer des sondages",
+    "voteCast": "Vote enregistré!",
+    "voteRecorded": "Votre vote a été enregistré",
+    "signedOut": "Déconnecté",
+    "signedOutSuccess": "Vous avez été déconnecté avec succès",
+    "error": "Erreur",
+    "failedToLoad": "Échec du chargement des sondages",
+    "failedToVote": "Échec de l'enregistrement du vote",
+    "failedToUpdate": "Échec de la mise à jour du vote"
+  },
+  "auth": {
+    "welcomeBack": "Bon retour",
+    "signInToContinue": "Connectez-vous à votre compte pour continuer",
+    "createAccount": "Créer un compte",
+    "getStarted": "Commencez avec votre compte aujourd'hui",
+    "email": "Email",
+    "password": "Mot de passe",
+    "username": "Nom d'utilisateur",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "or": "Ou continuer avec",
+    "google": "Google",
+    "noAccount": "Vous n'avez pas de compte?",
+    "hasAccount": "Vous avez déjà un compte?",
+    "error": "Erreur",
+    "authFailed": "Échec de l'authentification. Veuillez réessayer."
+  },
+  "createPoll": {
+    "title": "Créer un Nouveau Sondage",
+    "pollTitle": "Titre du Sondage",
+    "pollTitlePlaceholder": "Quelle est votre question?",
+    "option": "Option",
+    "addOption": "Ajouter une Option",
+    "tags": "Étiquettes (séparées par des virgules)",
+    "tagsPlaceholder": "tech, lifestyle, jeux",
+    "media": "Médias (Images/Vidéos)",
+    "uploadMedia": "Télécharger des Médias",
+    "postAnonymously": "Publier Anonymement",
+    "anonymousDesc": "Votre nom d'utilisateur sera caché aux autres utilisateurs",
+    "createPoll": "Créer un Sondage",
+    "cancel": "Annuler",
+    "minOptions": "Veuillez ajouter au moins 2 options",
+    "success": "Sondage créé!",
+    "pollCreated": "Votre sondage a été créé avec succès",
+    "error": "Erreur",
+    "failedToCreate": "Échec de la création du sondage. Veuillez réessayer."
+  },
+  "pollCard": {
+    "anonymous": "Anonyme",
+    "votes": "votes",
+    "comments": "commentaires",
+    "vote": "Voter"
+  },
+  "profile": {
+    "error": "Erreur lors du chargement du profil",
+    "notFound": "Profil introuvable",
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "joined": "Rejoint",
+    "follow": "Suivre",
+    "unfollow": "Ne plus suivre",
+    "followed": "Utilisateur suivi",
+    "unfollowed": "Utilisateur non suivi",
+    "followError": "Erreur lors de la mise à jour du statut de suivi",
+    "pollsCreated": "Sondages Créés",
+    "pollsVoted": "Sondages Votés",
+    "polls": "Sondages",
+    "votingHistory": "Historique des Votes",
+    "noPolls": "Pas encore de sondages",
+    "noVotes": "Pas encore de votes"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "back": "Retour"
+  }
+}

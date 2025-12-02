@@ -1,0 +1,91 @@
+{
+  "app": {
+    "title": "This or That"
+  },
+  "header": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "profile": "Profile"
+  },
+  "home": {
+    "new": "New",
+    "top": "Top",
+    "noPolls": "No polls yet. Be the first to create one!",
+    "signInRequired": "Sign in required",
+    "signInToVote": "Please sign in to vote on polls",
+    "signInToCreate": "Please sign in to create polls",
+    "voteCast": "Vote cast!",
+    "voteRecorded": "Your vote has been recorded",
+    "signedOut": "Signed out",
+    "signedOutSuccess": "You've been signed out successfully",
+    "error": "Error",
+    "failedToLoad": "Failed to load polls",
+    "failedToVote": "Failed to cast vote",
+    "failedToUpdate": "Failed to update vote"
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "signInToContinue": "Sign in to your account to continue",
+    "createAccount": "Create an account",
+    "getStarted": "Get started with your account today",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "or": "Or continue with",
+    "google": "Google",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "error": "Error",
+    "authFailed": "Authentication failed. Please try again."
+  },
+  "createPoll": {
+    "title": "Create a New Poll",
+    "pollTitle": "Poll Title",
+    "pollTitlePlaceholder": "What's your question?",
+    "option": "Option",
+    "addOption": "Add Option",
+    "tags": "Tags (comma separated)",
+    "tagsPlaceholder": "tech, lifestyle, gaming",
+    "media": "Media (Images/Videos)",
+    "uploadMedia": "Upload Media",
+    "postAnonymously": "Post Anonymously",
+    "anonymousDesc": "Your username will be hidden from other users",
+    "createPoll": "Create Poll",
+    "cancel": "Cancel",
+    "minOptions": "Please add at least 2 options",
+    "success": "Poll created!",
+    "pollCreated": "Your poll has been created successfully",
+    "error": "Error",
+    "failedToCreate": "Failed to create poll. Please try again."
+  },
+  "pollCard": {
+    "anonymous": "Anonymous",
+    "votes": "votes",
+    "comments": "comments",
+    "vote": "Vote"
+  },
+  "profile": {
+    "error": "Error loading profile",
+    "notFound": "Profile not found",
+    "followers": "Followers",
+    "following": "Following",
+    "joined": "Joined",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followed": "Followed user",
+    "unfollowed": "Unfollowed user",
+    "followError": "Error updating follow status",
+    "pollsCreated": "Polls Created",
+    "pollsVoted": "Polls Voted",
+    "polls": "Polls",
+    "votingHistory": "Voting History",
+    "noPolls": "No polls yet",
+    "noVotes": "No votes yet"
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back"
+  }
+}

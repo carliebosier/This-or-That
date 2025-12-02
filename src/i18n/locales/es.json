@@ -1,0 +1,91 @@
+{
+  "app": {
+    "title": "Esto o Aquello"
+  },
+  "header": {
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "profile": "Perfil"
+  },
+  "home": {
+    "new": "Nuevas",
+    "top": "Populares",
+    "noPolls": "No hay encuestas todavía. ¡Sé el primero en crear una!",
+    "signInRequired": "Inicio de sesión requerido",
+    "signInToVote": "Por favor, inicia sesión para votar en encuestas",
+    "signInToCreate": "Por favor, inicia sesión para crear encuestas",
+    "voteCast": "¡Voto emitido!",
+    "voteRecorded": "Tu voto ha sido registrado",
+    "signedOut": "Sesión cerrada",
+    "signedOutSuccess": "Has cerrado sesión exitosamente",
+    "error": "Error",
+    "failedToLoad": "Error al cargar encuestas",
+    "failedToVote": "Error al emitir voto",
+    "failedToUpdate": "Error al actualizar voto"
+  },
+  "auth": {
+    "welcomeBack": "Bienvenido de nuevo",
+    "signInToContinue": "Inicia sesión en tu cuenta para continuar",
+    "createAccount": "Crear una cuenta",
+    "getStarted": "Comienza con tu cuenta hoy",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "username": "Nombre de usuario",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "or": "O continuar con",
+    "google": "Google",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "error": "Error",
+    "authFailed": "Error de autenticación. Por favor, inténtalo de nuevo."
+  },
+  "createPoll": {
+    "title": "Crear una Nueva Encuesta",
+    "pollTitle": "Título de la Encuesta",
+    "pollTitlePlaceholder": "¿Cuál es tu pregunta?",
+    "option": "Opción",
+    "addOption": "Agregar Opción",
+    "tags": "Etiquetas (separadas por comas)",
+    "tagsPlaceholder": "tecnología, estilo de vida, juegos",
+    "media": "Medios (Imágenes/Videos)",
+    "uploadMedia": "Subir Medios",
+    "postAnonymously": "Publicar Anónimamente",
+    "anonymousDesc": "Tu nombre de usuario estará oculto para otros usuarios",
+    "createPoll": "Crear Encuesta",
+    "cancel": "Cancelar",
+    "minOptions": "Por favor, agrega al menos 2 opciones",
+    "success": "¡Encuesta creada!",
+    "pollCreated": "Tu encuesta ha sido creada exitosamente",
+    "error": "Error",
+    "failedToCreate": "Error al crear encuesta. Por favor, inténtalo de nuevo."
+  },
+  "pollCard": {
+    "anonymous": "Anónimo",
+    "votes": "votos",
+    "comments": "comentarios",
+    "vote": "Votar"
+  },
+  "profile": {
+    "error": "Error al cargar el perfil",
+    "notFound": "Perfil no encontrado",
+    "followers": "Seguidores",
+    "following": "Siguiendo",
+    "joined": "Se unió",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "followed": "Usuario seguido",
+    "unfollowed": "Se dejó de seguir al usuario",
+    "followError": "Error al actualizar el estado de seguimiento",
+    "pollsCreated": "Encuestas Creadas",
+    "pollsVoted": "Encuestas Votadas",
+    "polls": "Encuestas",
+    "votingHistory": "Historial de Votos",
+    "noPolls": "Aún no hay encuestas",
+    "noVotes": "Aún no hay votos"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "back": "Volver"
+  }
+}
