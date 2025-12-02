@@ -1,74 +1,47 @@
-# Welcome to your Lovable project
+This or That
 
-## Project info
+This or That is a social polling application where users create simple two-option polls and engage with the community through voting and commenting. The goal is to provide a fast, lightweight, and fun way for people to request opinions and instantly see community preferences.
 
-**URL**: https://lovable.dev/projects/28cd7aee-80ae-4b3b-afac-9d77940555ff
+🔍 Project Description
 
-## How can I edit this code?
+This or That allows users to:
 
-There are several ways of editing your application.
+Create polls with two options (each with text and optional images)
 
-**Use Lovable**
+Vote once per poll (enforced server-side for fairness)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/28cd7aee-80ae-4b3b-afac-9d77940555ff) and start prompting.
+Comment on polls
 
-Changes made via Lovable will be committed automatically to this repo.
+Browse polls by popularity, recency, or tags
 
-**Use your preferred IDE**
+Participate as authenticated users or guests (with anti-spam restrictions)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The system is built with a React + Vite client and a backend API that handles poll creation, validation, voting, feeds, and database operations. Server-side checks ensure all rules—such as one-vote-per-poll—are enforced securely and accurately.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Core Features
 
-Follow these steps:
+🗳️ Two-option polls
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+👤 Authenticated + guest participation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+🖼️ Optional images with accessibility requirements
 
-# Step 3: Install the necessary dependencies.
-npm i
+🏷️ Tagging + searchable feeds
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+🔐 Secure authentication and rate limiting
 
-**Edit a file directly in GitHub**
+⚡ Cached vote/comment counts for fast feed loading
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+🧭 Feeds sorted by popularity, recency, or tag
 
-**Use GitHub Codespaces**
+Future Enhancements
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Poll expiration
 
-## What technologies are used for this project?
+Personalized recommendations
 
-This project is built with:
+Private/group polls
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+User analytics
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/28cd7aee-80ae-4b3b-afac-9d77940555ff) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-# This-or-That
+Real-time updates
