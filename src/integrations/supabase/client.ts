@@ -5,6 +5,27 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Check for missing environment variables
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  const missingVars = [];
+  if (!SUPABASE_URL) missingVars.push('VITE_SUPABASE_URL');
+  if (!SUPABASE_PUBLISHABLE_KEY) missingVars.push('VITE_SUPABASE_PUBLISHABLE_KEY');
+  
+  console.error(
+    `❌ Missing required environment variables: ${missingVars.join(', ')}\n\n` +
+    `Please create a .env file in the project root with:\n` +
+    `VITE_SUPABASE_URL=https://your-project-id.supabase.co\n` +
+    `VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-public-key-here\n\n` +
+    `See QUICK_START_SUPABASE.md for setup instructions.`
+  );
+  
+  // Create a helpful error that will be visible in the app
+  throw new Error(
+    `Missing Supabase configuration. Please create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY. ` +
+    `See QUICK_START_SUPABASE.md for instructions.`
+  );
+}
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
