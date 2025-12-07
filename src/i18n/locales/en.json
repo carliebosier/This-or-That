@@ -39,7 +39,13 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "error": "Error",
-    "authFailed": "Authentication failed. Please try again."
+    "authFailed": "Authentication failed. Please try again.",
+    "signUpSuccess": "Account created!",
+    "accountCreated": "Your account has been created successfully.",
+    "checkEmail": "Check your email",
+    "confirmationEmailSent": "We've sent you a confirmation email. Please click the link to verify your account, then sign in.",
+    "emailConfirmed": "Email confirmed!",
+    "accountVerified": "Your account has been verified. You're now signed in."
   },
   "createPoll": {
     "title": "Create a New Poll",

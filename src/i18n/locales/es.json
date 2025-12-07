@@ -39,7 +39,13 @@
     "noAccount": "¿No tienes una cuenta?",
     "hasAccount": "¿Ya tienes una cuenta?",
     "error": "Error",
-    "authFailed": "Error de autenticación. Por favor, inténtalo de nuevo."
+    "authFailed": "Error de autenticación. Por favor, inténtalo de nuevo.",
+    "signUpSuccess": "¡Cuenta creada!",
+    "accountCreated": "Tu cuenta ha sido creada exitosamente.",
+    "checkEmail": "Revisa tu correo",
+    "confirmationEmailSent": "Te hemos enviado un correo de confirmación. Por favor, haz clic en el enlace para verificar tu cuenta y luego inicia sesión.",
+    "emailConfirmed": "¡Correo confirmado!",
+    "accountVerified": "Tu cuenta ha sido verificada. Ya estás conectado."
   },
   "createPoll": {
     "title": "Crear una Nueva Encuesta",

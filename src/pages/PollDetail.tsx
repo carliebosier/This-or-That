@@ -177,10 +177,12 @@ export default function PollDetail() {
     setVotingInProgress(true);
 
     try {
+      // Create new vote - explicitly set voter_guest_id to NULL to avoid constraint conflicts
       const { error } = await supabase.from("votes").insert({
         poll_id: pollId,
         option_id: optionId,
         voter_user_id: user.id,
+        voter_guest_id: null,
       });
 
       if (error) {

@@ -147,11 +147,12 @@ export default function Home() {
         return;
       }
 
-      // Create new vote
+      // Create new vote - explicitly set voter_guest_id to NULL to avoid constraint conflicts
       const { error } = await supabase.from("votes").insert({
         poll_id: pollId,
         option_id: optionId,
         voter_user_id: authUser.id,
+        voter_guest_id: null,
       });
 
       if (error) {

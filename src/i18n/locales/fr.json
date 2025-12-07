@@ -39,7 +39,13 @@
     "noAccount": "Vous n'avez pas de compte?",
     "hasAccount": "Vous avez déjà un compte?",
     "error": "Erreur",
-    "authFailed": "Échec de l'authentification. Veuillez réessayer."
+    "authFailed": "Échec de l'authentification. Veuillez réessayer.",
+    "signUpSuccess": "Compte créé!",
+    "accountCreated": "Votre compte a été créé avec succès.",
+    "checkEmail": "Vérifiez votre email",
+    "confirmationEmailSent": "Nous vous avons envoyé un email de confirmation. Veuillez cliquer sur le lien pour vérifier votre compte, puis connectez-vous.",
+    "emailConfirmed": "Email confirmé!",
+    "accountVerified": "Votre compte a été vérifié. Vous êtes maintenant connecté."
   },
   "createPoll": {
     "title": "Créer un Nouveau Sondage",

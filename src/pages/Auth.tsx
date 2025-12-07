@@ -24,7 +24,9 @@ export default function Auth() {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const error = hashParams.get("error");
     const errorDescription = hashParams.get("error_description");
+    const type = hashParams.get("type");
     
+    // Handle OAuth callback errors
     if (error || errorDescription) {
       // Check for provider not enabled error
       if (error === "validation_failed" || 
@@ -46,11 +48,35 @@ export default function Auth() {
       window.history.replaceState(null, "", window.location.pathname);
     }
 
+    // Listen for auth state changes (handles email confirmation automatically)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        // Check if this is from email confirmation by checking URL hash
+        const currentHashParams = new URLSearchParams(window.location.hash.substring(1));
+        const currentType = currentHashParams.get("type");
+        
+        if (currentType === "signup" || currentType === "email") {
+          toast({
+            title: t("auth.emailConfirmed"),
+            description: t("auth.accountVerified"),
+          });
+          // Clean up URL hash
+          window.history.replaceState(null, "", window.location.pathname);
+        }
+        navigate("/");
+      }
+    });
+
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/");
       }
     });
+
+    return () => subscription.unsubscribe();
   }, [navigate, toast, t]);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,14 +88,30 @@ export default function Auth() {
     const password = formData.get("password") as string;
     const username = formData.get("username") as string;
 
-    const { error } = await supabase.auth.signUp({
+    // Get the site URL from environment variable
+    // For email redirects, prioritize VITE_SITE_URL to ensure production URLs are used
+    // If not set, use current origin (for development)
+    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    
+    // Warn if VITE_SITE_URL is not set and we're not on localhost (likely production)
+    if (!import.meta.env.VITE_SITE_URL && !window.location.origin.includes('localhost')) {
+      console.warn(
+        '⚠️ VITE_SITE_URL is not set. Email confirmation links will use:',
+        window.location.origin,
+        '\nTo fix: Set VITE_SITE_URL in your .env file to your production URL'
+      );
+    }
+    
+    const redirectUrl = `${siteUrl}/`;
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           username: username || email.split("@")[0],
         },
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: redirectUrl,
       },
     });
 
@@ -82,11 +124,22 @@ export default function Auth() {
         variant: "destructive",
       });
     } else {
-      toast({
-        title: "Success!",
-        description: "Account created. You're now logged in!",
-      });
-      navigate("/");
+      // Check if email confirmation is required
+      if (data.session) {
+        // User is automatically signed in (email confirmation disabled)
+        toast({
+          title: t("auth.signUpSuccess"),
+          description: t("auth.accountCreated"),
+        });
+        navigate("/");
+      } else {
+        // Email confirmation is required
+        toast({
+          title: t("auth.checkEmail"),
+          description: t("auth.confirmationEmailSent"),
+        });
+        // Stay on auth page so user can sign in after confirming email
+      }
     }
   };
 
@@ -123,10 +176,15 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      // Get the site URL from environment variable
+      // For OAuth redirects, use production URL if available, otherwise current origin
+      const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+      const redirectUrl = `${siteUrl}/`;
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: redirectUrl,
         },
       });
 
