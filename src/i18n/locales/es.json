@@ -79,6 +79,7 @@
     "comments": "Comentarios",
     "addComment": "Escribe un comentario...",
     "signInRequired": "Inicio de sesión requerido",
+    "signInToVote": "Por favor, inicia sesión para votar en esta encuesta",
     "signInToComment": "Por favor, inicia sesión para publicar comentarios",
     "commentAdded": "¡Comentario añadido!",
     "commentSuccess": "Tu comentario ha sido publicado",

@@ -79,6 +79,7 @@
     "comments": "Comments",
     "addComment": "Write a comment...",
     "signInRequired": "Sign in required",
+    "signInToVote": "Please sign in to vote on this poll",
     "signInToComment": "Please sign in to post comments",
     "commentAdded": "Comment added!",
     "commentSuccess": "Your comment has been posted",

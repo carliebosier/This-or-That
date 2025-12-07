@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { getOrCreateGuestIdentity } from "@/lib/guestIdentity";
 
 interface Poll {
   id: string;
@@ -49,7 +48,6 @@ export default function Home() {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
-  const [guestId, setGuestId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"new" | "top">("new");
 
   useEffect(() => {
@@ -63,9 +61,6 @@ export default function Home() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
-
-    // Get or create guest identity for guest voting
-    getOrCreateGuestIdentity().then(setGuestId);
 
     return () => subscription.unsubscribe();
   }, []);
@@ -118,82 +113,54 @@ export default function Home() {
   };
 
   const handleVote = async (pollId: string, optionId: string) => {
+    // Require authentication to vote
+    if (!user) {
+      toast({
+        title: t("home.signInRequired"),
+        description: t("home.signInToVote"),
+      });
+      navigate("/auth");
+      return;
+    }
+
     try {
-      if (user) {
-        // Authenticated user vote
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) {
-          toast({
-            title: t("home.signInRequired"),
-            description: t("home.signInToVote"),
-          });
-          return;
-        }
-
-        // Check if user already voted
-        const { data: existingVoteData } = await supabase
-          .from("votes")
-          .select("id, option_id")
-          .eq("poll_id", pollId)
-          .eq("voter_user_id", authUser.id)
-          .maybeSingle();
-
-        if (existingVoteData) {
-          // Already voted, don't allow change from the card view
-          return;
-        }
-
-        // Create new vote
-        const { error } = await supabase.from("votes").insert({
-          poll_id: pollId,
-          option_id: optionId,
-          voter_user_id: authUser.id,
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) {
+        toast({
+          title: t("home.signInRequired"),
+          description: t("home.signInToVote"),
         });
+        navigate("/auth");
+        return;
+      }
 
-        if (error) {
-          console.error("Error inserting vote:", error);
-          toast({
-            title: t("home.error"),
-            description: t("home.failedToVote"),
-            variant: "destructive",
-          });
-          return;
-        }
-      } else if (guestId) {
-        // Guest vote
-        // Check if guest already voted
-        const { data: existingGuestVote } = await supabase
-          .from("votes")
-          .select("id, option_id")
-          .eq("poll_id", pollId)
-          .eq("voter_guest_id", guestId)
-          .maybeSingle();
+      // Check if user already voted
+      const { data: existingVoteData } = await supabase
+        .from("votes")
+        .select("id, option_id")
+        .eq("poll_id", pollId)
+        .eq("voter_user_id", authUser.id)
+        .maybeSingle();
 
-        if (existingGuestVote) {
-          // Already voted, don't allow change from the card view
-          return;
-        }
+      if (existingVoteData) {
+        // Already voted, don't allow change from the card view
+        return;
+      }
 
-        // Create new guest vote
-        const { error } = await supabase.from("votes").insert({
-          poll_id: pollId,
-          option_id: optionId,
-          voter_guest_id: guestId,
-        });
+      // Create new vote
+      const { error } = await supabase.from("votes").insert({
+        poll_id: pollId,
+        option_id: optionId,
+        voter_user_id: authUser.id,
+      });
 
-        if (error) {
-          console.error("Error inserting guest vote:", error);
-          toast({
-            title: t("home.error"),
-            description: t("home.failedToVote"),
-            variant: "destructive",
-          });
-          return;
-        }
-      } else {
+      if (error) {
+        console.error("Error inserting vote:", error);
+        console.error("Error details:", JSON.stringify(error, null, 2));
+        console.error("Poll ID:", pollId, "Option ID:", optionId, "User ID:", authUser.id);
         toast({
           title: t("home.error"),
-          description: t("home.unableToVote"),
+          description: error.message || t("home.failedToVote"),
           variant: "destructive",
         });
         return;
@@ -290,7 +257,7 @@ export default function Home() {
             ) : (
               polls.map((poll) => {
                 const userVote = poll.votes.find(
-                  (v) => v.voter_user_id === user?.id || v.voter_guest_id === guestId
+                  (v) => v.voter_user_id === user?.id
                 );
 
                 const optionsWithVotes = poll.poll_options.map((opt) => ({

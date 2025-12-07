@@ -79,6 +79,8 @@ export async function getOrCreateGuestIdentity(): Promise<string | null> {
 
     if (error) {
       console.error("Error creating guest identity:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      console.error("Fingerprint:", fingerprint);
       return null;
     }
 
@@ -90,6 +92,7 @@ export async function getOrCreateGuestIdentity(): Promise<string | null> {
     return null;
   } catch (error) {
     console.error("Error in getOrCreateGuestIdentity:", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
     return null;
   }
 }

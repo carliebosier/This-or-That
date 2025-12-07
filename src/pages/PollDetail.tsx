@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowLeft, MessageCircle, Share2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getOrCreateGuestIdentity } from "@/lib/guestIdentity";
 
 interface PollOption {
   id: string;
@@ -73,7 +72,6 @@ export default function PollDetail() {
   const [poll, setPoll] = useState<Poll | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
-  const [guestId, setGuestId] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | undefined>();
   const [commentText, setCommentText] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
@@ -91,9 +89,6 @@ export default function PollDetail() {
       setUser(session?.user ?? null);
     });
 
-    // Get or create guest identity
-    getOrCreateGuestIdentity().then(setGuestId);
-
     return () => subscription.unsubscribe();
   }, []);
 
@@ -105,15 +100,15 @@ export default function PollDetail() {
 
   useEffect(() => {
     // Set selected option based on user's existing vote
-    if (poll && (user || guestId)) {
+    if (poll && user) {
       const existingVote = poll.votes.find(
-        (v) => v.voter_user_id === user?.id || v.voter_guest_id === guestId
+        (v) => v.voter_user_id === user?.id
       );
       if (existingVote) {
         setSelectedOption(existingVote.option_id);
       }
     }
-  }, [poll, user, guestId]);
+  }, [poll, user]);
 
   const loadPoll = async () => {
     setLoading(true);
@@ -164,6 +159,16 @@ export default function PollDetail() {
   const handleVote = async (optionId: string) => {
     if (votingInProgress) return;
     
+    // Require authentication to vote
+    if (!user) {
+      toast({
+        title: t("pollDetail.signInRequired"),
+        description: t("pollDetail.signInToVote"),
+      });
+      navigate("/auth");
+      return;
+    }
+    
     // If already voted, don't allow changing
     if (selectedOption) {
       return;
@@ -172,31 +177,17 @@ export default function PollDetail() {
     setVotingInProgress(true);
 
     try {
-      if (user) {
-        // Authenticated user vote
-        const { error } = await supabase.from("votes").insert({
-          poll_id: pollId,
-          option_id: optionId,
-          voter_user_id: user.id,
-        });
+      const { error } = await supabase.from("votes").insert({
+        poll_id: pollId,
+        option_id: optionId,
+        voter_user_id: user.id,
+      });
 
-        if (error) throw error;
-      } else if (guestId) {
-        // Guest vote
-        const { error } = await supabase.from("votes").insert({
-          poll_id: pollId,
-          option_id: optionId,
-          voter_guest_id: guestId,
-        });
-
-        if (error) throw error;
-      } else {
-        toast({
-          title: t("pollDetail.error"),
-          description: t("pollDetail.unableToVote"),
-          variant: "destructive",
-        });
-        return;
+      if (error) {
+        console.error("Error inserting vote:", error);
+        console.error("Error details:", JSON.stringify(error, null, 2));
+        console.error("Poll ID:", pollId, "Option ID:", optionId, "User ID:", user.id);
+        throw error;
       }
 
       setSelectedOption(optionId);
@@ -208,6 +199,7 @@ export default function PollDetail() {
       });
     } catch (error: any) {
       console.error("Error voting:", error);
+      console.error("Error stack:", error?.stack);
       toast({
         title: t("home.error"),
         description: error.message || t("home.failedToVote"),

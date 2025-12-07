@@ -79,6 +79,7 @@
     "comments": "Commentaires",
     "addComment": "Écrire un commentaire...",
     "signInRequired": "Connexion requise",
+    "signInToVote": "Veuillez vous connecter pour voter sur ce sondage",
     "signInToComment": "Veuillez vous connecter pour publier des commentaires",
     "commentAdded": "Commentaire ajouté!",
     "commentSuccess": "Votre commentaire a été publié",
