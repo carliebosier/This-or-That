@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { getOrCreateGuestIdentity } from "@/lib/guestIdentity";
 
 interface Poll {
   id: string;
@@ -31,6 +32,7 @@ interface Poll {
   votes: Array<{
     option_id: string;
     voter_user_id: string | null;
+    voter_guest_id: string | null;
   }>;
   comments: Array<{ id: string }>;
   media_assets: Array<{
@@ -47,6 +49,7 @@ export default function Home() {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [guestId, setGuestId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"new" | "top">("new");
 
   useEffect(() => {
@@ -60,6 +63,9 @@ export default function Home() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
+
+    // Get or create guest identity for guest voting
+    getOrCreateGuestIdentity().then(setGuestId);
 
     return () => subscription.unsubscribe();
   }, []);
@@ -78,7 +84,7 @@ export default function Home() {
         author:profiles!author_id(username, id),
         poll_options(*),
         poll_tags(tags(label)),
-        votes(option_id, voter_user_id),
+        votes(option_id, voter_user_id, voter_guest_id),
         comments(id),
         media_assets(id, type, url)
       `)
@@ -112,74 +118,101 @@ export default function Home() {
   };
 
   const handleVote = async (pollId: string, optionId: string) => {
-    if (!user) {
-      toast({
-        title: t("home.signInRequired"),
-        description: t("home.signInToVote"),
-      });
-      return;
-    }
+    try {
+      if (user) {
+        // Authenticated user vote
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) {
+          toast({
+            title: t("home.signInRequired"),
+            description: t("home.signInToVote"),
+          });
+          return;
+        }
 
-    // Get current user ID - use auth.uid() which is what RLS policies check
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    if (!authUser) {
-      toast({
-        title: t("home.signInRequired"),
-        description: t("home.signInToVote"),
-      });
-      return;
-    }
+        // Check if user already voted
+        const { data: existingVoteData } = await supabase
+          .from("votes")
+          .select("id, option_id")
+          .eq("poll_id", pollId)
+          .eq("voter_user_id", authUser.id)
+          .maybeSingle();
 
-    // Check if user already voted - query directly to ensure we get the user's vote
-    const { data: existingVoteData } = await supabase
-      .from("votes")
-      .select("id, option_id")
-      .eq("poll_id", pollId)
-      .eq("voter_user_id", authUser.id)
-      .maybeSingle();
+        if (existingVoteData) {
+          // Already voted, don't allow change from the card view
+          return;
+        }
 
-    if (existingVoteData) {
-      // Update existing vote
-      const { error } = await supabase
-        .from("votes")
-        .update({ option_id: optionId })
-        .eq("poll_id", pollId)
-        .eq("voter_user_id", authUser.id);
+        // Create new vote
+        const { error } = await supabase.from("votes").insert({
+          poll_id: pollId,
+          option_id: optionId,
+          voter_user_id: authUser.id,
+        });
 
-      if (error) {
-        console.error("Error updating vote:", error);
+        if (error) {
+          console.error("Error inserting vote:", error);
+          toast({
+            title: t("home.error"),
+            description: t("home.failedToVote"),
+            variant: "destructive",
+          });
+          return;
+        }
+      } else if (guestId) {
+        // Guest vote
+        // Check if guest already voted
+        const { data: existingGuestVote } = await supabase
+          .from("votes")
+          .select("id, option_id")
+          .eq("poll_id", pollId)
+          .eq("voter_guest_id", guestId)
+          .maybeSingle();
+
+        if (existingGuestVote) {
+          // Already voted, don't allow change from the card view
+          return;
+        }
+
+        // Create new guest vote
+        const { error } = await supabase.from("votes").insert({
+          poll_id: pollId,
+          option_id: optionId,
+          voter_guest_id: guestId,
+        });
+
+        if (error) {
+          console.error("Error inserting guest vote:", error);
+          toast({
+            title: t("home.error"),
+            description: t("home.failedToVote"),
+            variant: "destructive",
+          });
+          return;
+        }
+      } else {
         toast({
           title: t("home.error"),
-          description: t("home.failedToUpdate"),
+          description: t("home.unableToVote"),
           variant: "destructive",
         });
         return;
       }
-    } else {
-      // Create new vote
-      const { error } = await supabase.from("votes").insert({
-        poll_id: pollId,
-        option_id: optionId,
-        voter_user_id: authUser.id,
+
+      // Reload polls to show updated results
+      loadPolls();
+      toast({
+        title: t("home.voteCast"),
+        description: t("home.voteRecorded"),
       });
-
-      if (error) {
-        console.error("Error inserting vote:", error);
-        toast({
-          title: t("home.error"),
-          description: t("home.failedToVote"),
-          variant: "destructive",
-        });
-        return;
-      }
+    } catch (error: any) {
+      console.error("Error voting:", error);
+      toast({
+        title: t("home.error"),
+        description: error.message || t("home.failedToVote"),
+        variant: "destructive",
+      });
     }
-
-    // Reload polls to show updated results
-    loadPolls();
-    toast({
-      title: t("home.voteCast"),
-      description: t("home.voteRecorded"),
-    });
   };
 
   const handleSignOut = async () => {
@@ -205,7 +238,7 @@ export default function Home() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate(`/profile/${user.id}`)}
                 >
                   <User className="h-4 w-4 mr-2" />
                   {t("header.profile")}
@@ -257,7 +290,7 @@ export default function Home() {
             ) : (
               polls.map((poll) => {
                 const userVote = poll.votes.find(
-                  (v) => v.voter_user_id === user?.id
+                  (v) => v.voter_user_id === user?.id || v.voter_guest_id === guestId
                 );
 
                 const optionsWithVotes = poll.poll_options.map((opt) => ({

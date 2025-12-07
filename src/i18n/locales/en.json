@@ -21,7 +21,8 @@
     "error": "Error",
     "failedToLoad": "Failed to load polls",
     "failedToVote": "Failed to cast vote",
-    "failedToUpdate": "Failed to update vote"
+    "failedToUpdate": "Failed to update vote",
+    "unableToVote": "Unable to vote. Please try again."
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -64,7 +65,30 @@
     "anonymous": "Anonymous",
     "votes": "votes",
     "comments": "comments",
-    "vote": "Vote"
+    "vote": "Vote",
+    "linkCopied": "Link copied!",
+    "linkCopiedDesc": "Poll link has been copied to clipboard",
+    "error": "Error",
+    "failedToCopy": "Failed to copy link to clipboard"
+  },
+  "pollDetail": {
+    "error": "Error",
+    "failedToLoad": "Failed to load poll",
+    "notFound": "Poll not found",
+    "unableToVote": "Unable to vote. Please try again.",
+    "comments": "Comments",
+    "addComment": "Write a comment...",
+    "signInRequired": "Sign in required",
+    "signInToComment": "Please sign in to post comments",
+    "commentAdded": "Comment added!",
+    "commentSuccess": "Your comment has been posted",
+    "failedToComment": "Failed to post comment",
+    "commentsDisabled": "Comments are disabled for this poll",
+    "noComments": "No comments yet. Be the first to comment!",
+    "guest": "Guest",
+    "linkCopied": "Link copied!",
+    "linkCopiedDesc": "Poll link has been copied to clipboard",
+    "failedToCopy": "Failed to copy link to clipboard"
   },
   "profile": {
     "error": "Error loading profile",

@@ -21,7 +21,8 @@
     "error": "Error",
     "failedToLoad": "Error al cargar encuestas",
     "failedToVote": "Error al emitir voto",
-    "failedToUpdate": "Error al actualizar voto"
+    "failedToUpdate": "Error al actualizar voto",
+    "unableToVote": "No se pudo votar. Por favor, inténtalo de nuevo."
   },
   "auth": {
     "welcomeBack": "Bienvenido de nuevo",
@@ -64,7 +65,30 @@
     "anonymous": "Anónimo",
     "votes": "votos",
     "comments": "comentarios",
-    "vote": "Votar"
+    "vote": "Votar",
+    "linkCopied": "¡Enlace copiado!",
+    "linkCopiedDesc": "El enlace de la encuesta ha sido copiado al portapapeles",
+    "error": "Error",
+    "failedToCopy": "Error al copiar el enlace al portapapeles"
+  },
+  "pollDetail": {
+    "error": "Error",
+    "failedToLoad": "Error al cargar la encuesta",
+    "notFound": "Encuesta no encontrada",
+    "unableToVote": "No se pudo votar. Por favor, inténtalo de nuevo.",
+    "comments": "Comentarios",
+    "addComment": "Escribe un comentario...",
+    "signInRequired": "Inicio de sesión requerido",
+    "signInToComment": "Por favor, inicia sesión para publicar comentarios",
+    "commentAdded": "¡Comentario añadido!",
+    "commentSuccess": "Tu comentario ha sido publicado",
+    "failedToComment": "Error al publicar el comentario",
+    "commentsDisabled": "Los comentarios están desactivados para esta encuesta",
+    "noComments": "Aún no hay comentarios. ¡Sé el primero en comentar!",
+    "guest": "Invitado",
+    "linkCopied": "¡Enlace copiado!",
+    "linkCopiedDesc": "El enlace de la encuesta ha sido copiado al portapapeles",
+    "failedToCopy": "Error al copiar el enlace al portapapeles"
   },
   "profile": {
     "error": "Error al cargar el perfil",

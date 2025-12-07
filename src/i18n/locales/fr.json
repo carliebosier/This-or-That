@@ -21,7 +21,8 @@
     "error": "Erreur",
     "failedToLoad": "Échec du chargement des sondages",
     "failedToVote": "Échec de l'enregistrement du vote",
-    "failedToUpdate": "Échec de la mise à jour du vote"
+    "failedToUpdate": "Échec de la mise à jour du vote",
+    "unableToVote": "Impossible de voter. Veuillez réessayer."
   },
   "auth": {
     "welcomeBack": "Bon retour",
@@ -64,7 +65,30 @@
     "anonymous": "Anonyme",
     "votes": "votes",
     "comments": "commentaires",
-    "vote": "Voter"
+    "vote": "Voter",
+    "linkCopied": "Lien copié!",
+    "linkCopiedDesc": "Le lien du sondage a été copié dans le presse-papiers",
+    "error": "Erreur",
+    "failedToCopy": "Échec de la copie du lien dans le presse-papiers"
+  },
+  "pollDetail": {
+    "error": "Erreur",
+    "failedToLoad": "Échec du chargement du sondage",
+    "notFound": "Sondage introuvable",
+    "unableToVote": "Impossible de voter. Veuillez réessayer.",
+    "comments": "Commentaires",
+    "addComment": "Écrire un commentaire...",
+    "signInRequired": "Connexion requise",
+    "signInToComment": "Veuillez vous connecter pour publier des commentaires",
+    "commentAdded": "Commentaire ajouté!",
+    "commentSuccess": "Votre commentaire a été publié",
+    "failedToComment": "Échec de la publication du commentaire",
+    "commentsDisabled": "Les commentaires sont désactivés pour ce sondage",
+    "noComments": "Pas encore de commentaires. Soyez le premier à commenter!",
+    "guest": "Invité",
+    "linkCopied": "Lien copié!",
+    "linkCopiedDesc": "Le lien du sondage a été copié dans le presse-papiers",
+    "failedToCopy": "Échec de la copie du lien dans le presse-papiers"
   },
   "profile": {
     "error": "Erreur lors du chargement du profil",

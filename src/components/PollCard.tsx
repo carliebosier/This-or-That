@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { useToast } from "@/hooks/use-toast";
 
 interface PollOption {
   id: string;
@@ -54,6 +55,7 @@ export const PollCard = ({
 }: PollCardProps) => {
   const [selectedOption, setSelectedOption] = useState<string | undefined>(userVote);
   const { t } = useTranslation();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleVote = (optionId: string) => {
@@ -64,6 +66,42 @@ export const PollCard = ({
   const getPercentage = (votes: number) => {
     if (totalVotes === 0) return 0;
     return Math.round((votes / totalVotes) * 100);
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const pollUrl = `${window.location.origin}/polls/${id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Vote on: ${title}`,
+          url: pollUrl,
+        });
+      } catch (error) {
+        // User cancelled or error occurred, fall back to clipboard
+        copyToClipboard(pollUrl);
+      }
+    } else {
+      copyToClipboard(pollUrl);
+    }
+  };
+
+  const copyToClipboard = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: t("pollCard.linkCopied"),
+        description: t("pollCard.linkCopiedDesc"),
+      });
+    } catch (error) {
+      toast({
+        title: t("pollCard.error"),
+        description: t("pollCard.failedToCopy"),
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -200,7 +238,7 @@ export const PollCard = ({
               <MessageCircle className="h-4 w-4" />
               {commentCount}
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={handleShare}>
               <Share2 className="h-4 w-4" />
             </Button>
           </div>
