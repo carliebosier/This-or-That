@@ -293,7 +293,10 @@ export default function Profile() {
         return;
       }
 
+      // Refresh profile to ensure UI reflects the change everywhere
+      await fetchProfileData();
       setProfile((prev) => prev ? { ...prev, username: trimmedUsername } : null);
+      setNewUsername(trimmedUsername);
       setIsEditDialogOpen(false);
       toast({
         title: t("profile.usernameUpdated"),
