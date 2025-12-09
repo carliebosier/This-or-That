@@ -327,20 +327,20 @@ export default function PollDetail() {
 
   return (
     <div className="min-h-screen gradient-subtle">
-      <div className="container mx-auto px-4 py-6 max-w-2xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-2xl">
         {/* Back Button */}
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate("/")}
-          className="mb-4"
+          className="mb-3 sm:mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t("common.back")}
         </Button>
 
         {/* Poll Card */}
-        <Card className="mb-6">
+        <Card className="mb-4 sm:mb-6">
           <CardHeader className="pb-2">
             {/* Author Info */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -362,11 +362,11 @@ export default function PollDetail() {
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold">{poll.title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">{poll.title}</h1>
 
             {/* Description */}
             {poll.body && (
-              <p className="text-muted-foreground mt-2">{poll.body}</p>
+              <p className="text-sm sm:text-base text-muted-foreground mt-2">{poll.body}</p>
             )}
           </CardHeader>
 
@@ -394,12 +394,12 @@ export default function PollDetail() {
                       <img 
                         src={media.url} 
                         alt="Poll media" 
-                        className="w-full h-64 object-cover"
+                        className="w-full h-48 sm:h-64 object-cover"
                       />
                     ) : (
                       <video 
                         src={media.url} 
-                        className="w-full h-64 object-cover"
+                        className="w-full h-48 sm:h-64 object-cover"
                         controls
                       />
                     )}
@@ -420,7 +420,7 @@ export default function PollDetail() {
                     onClick={() => !hasVoted && handleVote(option.id)}
                     disabled={hasVoted || votingInProgress}
                     className={cn(
-                      "relative w-full rounded-lg border-2 p-4 text-left transition-all overflow-hidden",
+                      "relative w-full rounded-lg border-2 p-3 sm:p-4 text-left transition-all overflow-hidden text-sm sm:text-base",
                       hasVoted
                         ? "cursor-default"
                         : "cursor-pointer hover:border-primary hover:shadow-md",
@@ -456,20 +456,20 @@ export default function PollDetail() {
 
             {/* Footer Stats */}
             <div className="flex items-center justify-between pt-2 border-t">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs sm:text-sm text-muted-foreground">
                 {getTotalVotes()} {t("pollCard.votes")}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-2"
+                  className="gap-1 sm:gap-2 h-8 sm:h-9"
                 >
-                  <MessageCircle className="h-4 w-4" />
-                  {poll.comments.length}
+                  <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-xs sm:text-sm">{poll.comments.length}</span>
                 </Button>
-                <Button variant="ghost" size="sm" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
+                <Button variant="ghost" size="sm" onClick={handleShare} className="h-8 sm:h-9">
+                  <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             </div>
@@ -478,13 +478,13 @@ export default function PollDetail() {
 
         {/* Comments Section */}
         <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
+              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               {t("pollDetail.comments")} ({poll.comments.length})
             </h2>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4">
             {/* Add Comment Form - Only for authenticated users */}
             {poll.allow_comments && (
               <div className="space-y-2">

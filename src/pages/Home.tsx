@@ -13,6 +13,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 interface Poll {
   id: string;
   title: string;
+  body: string | null;
   is_anonymous: boolean;
   created_at: string;
   author: {
@@ -75,7 +76,11 @@ export default function Home() {
     let query = supabase
       .from("polls")
       .select(`
-        *,
+        id,
+        title,
+        body,
+        is_anonymous,
+        created_at,
         author:profiles!author_id(username, id),
         poll_options(*),
         poll_tags(tags(label)),
@@ -195,23 +200,32 @@ export default function Home() {
     <div className="min-h-screen gradient-subtle">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <h1 className="text-xl sm:text-2xl font-bold text-primary">
             {t("app.title")}
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <LanguageSelector />
             {user ? (
               <>
                 <Button
                   variant="ghost"
                   size="sm"
+                  className="hidden sm:flex"
                   onClick={() => navigate(`/profile/${user.id}`)}
                 >
                   <User className="h-4 w-4 mr-2" />
                   {t("header.profile")}
                 </Button>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="sm:hidden"
+                  onClick={() => navigate(`/profile/${user.id}`)}
+                >
+                  <User className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-xs sm:text-sm">
                   {t("header.signOut")}
                 </Button>
               </>
@@ -220,9 +234,11 @@ export default function Home() {
                 variant="default"
                 size="sm"
                 onClick={() => navigate("/auth")}
+                className="text-xs sm:text-sm"
               >
-                <LogIn className="h-4 w-4 mr-2" />
-                {t("header.signIn")}
+                <LogIn className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{t("header.signIn")}</span>
+                <span className="sm:hidden">Sign In</span>
               </Button>
             )}
           </div>
@@ -230,7 +246,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 max-w-2xl">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-2xl">
         <Tabs value={sortBy} onValueChange={(v) => setSortBy(v as "new" | "top")}>
           <TabsList className="w-full">
             <TabsTrigger value="new" className="flex-1">
@@ -284,6 +300,7 @@ export default function Home() {
                     userVote={userVote?.option_id}
                     isAnonymous={poll.is_anonymous}
                     mediaAssets={poll.media_assets || []}
+                    description={poll.body}
                     onVote={handleVote}
                     onClick={() => navigate(`/polls/${poll.id}`)}
                   />
@@ -297,7 +314,7 @@ export default function Home() {
       {/* Floating Action Button */}
       <Button
         size="lg"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-colored"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-colored"
         onClick={() => {
           if (!user) {
             toast({
@@ -310,7 +327,7 @@ export default function Home() {
           }
         }}
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
       </Button>
     </div>
   );

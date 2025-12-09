@@ -33,6 +33,7 @@ interface PollCardProps {
   userVote?: string;
   isAnonymous?: boolean;
   mediaAssets?: MediaAsset[];
+  description?: string | null;
   onVote: (pollId: string, optionId: string) => void;
   onClick: () => void;
 }
@@ -50,6 +51,7 @@ export const PollCard = ({
   userVote,
   isAnonymous,
   mediaAssets = [],
+  description,
   onVote,
   onClick,
 }: PollCardProps) => {
@@ -106,11 +108,11 @@ export const PollCard = ({
 
   return (
     <Card className="overflow-hidden transition-smooth hover:shadow-lg">
-      <div className="p-4 space-y-4">
+      <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-1 flex-wrap">
               <span 
                 className={cn(
                   "font-medium text-foreground",
@@ -129,11 +131,20 @@ export const PollCard = ({
               <span>{timeAgo}</span>
             </div>
             <h3
-              className="text-lg font-bold cursor-pointer hover:text-primary transition-smooth"
+              className="text-base sm:text-lg font-bold cursor-pointer hover:text-primary transition-smooth"
               onClick={onClick}
             >
               {title}
             </h3>
+            {description && (
+              <p className="text-sm text-muted-foreground mt-2 overflow-hidden text-ellipsis" style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              }}>
+                {description}
+              </p>
+            )}
           </div>
         </div>
 
@@ -160,13 +171,13 @@ export const PollCard = ({
                   <img 
                     src={media.url} 
                     alt="Poll media" 
-                    className="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-smooth"
+                    className="w-full h-32 sm:h-48 object-cover cursor-pointer hover:opacity-90 transition-smooth"
                     onClick={onClick}
                   />
                 ) : (
                   <video 
                     src={media.url} 
-                    className="w-full h-48 object-cover"
+                    className="w-full h-32 sm:h-48 object-cover"
                     controls
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -189,7 +200,7 @@ export const PollCard = ({
                 onClick={() => !hasVoted && handleVote(option.id)}
                 disabled={hasVoted}
                 className={cn(
-                  "relative w-full rounded-lg border-2 p-4 text-left transition-smooth overflow-hidden",
+                  "relative w-full rounded-lg border-2 p-3 sm:p-4 text-left transition-smooth overflow-hidden text-sm sm:text-base",
                   hasVoted
                     ? "cursor-default"
                     : "cursor-pointer hover:border-primary hover:shadow-md",
@@ -225,21 +236,21 @@ export const PollCard = ({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t">
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs sm:text-sm text-muted-foreground">
             {totalVotes} {t("pollCard.votes")}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="sm"
-              className="gap-2"
+              className="gap-1 sm:gap-2 h-8 sm:h-9"
               onClick={onClick}
             >
-              <MessageCircle className="h-4 w-4" />
-              {commentCount}
+              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-xs sm:text-sm">{commentCount}</span>
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleShare}>
-              <Share2 className="h-4 w-4" />
+            <Button variant="ghost" size="sm" onClick={handleShare} className="h-8 sm:h-9">
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
         </div>

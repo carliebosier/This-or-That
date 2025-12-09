@@ -94,3 +94,4 @@ The code changes ensure that:
 - Error messages are shown to users
 - Both authenticated and guest voting flows are properly handled
 
+

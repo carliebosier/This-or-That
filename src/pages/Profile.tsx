@@ -6,8 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PollCard } from "@/components/PollCard";
-import { ArrowLeft, Users, BarChart3, Calendar } from "lucide-react";
+import { ArrowLeft, Users, BarChart3, Calendar, Edit2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
@@ -24,6 +27,7 @@ interface Profile {
 interface Poll {
   id: string;
   title: string;
+  body: string | null;
   created_at: string;
   is_anonymous: boolean;
   author?: {
@@ -64,6 +68,9 @@ export default function Profile() {
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -96,6 +103,7 @@ export default function Profile() {
 
       if (profileError) throw profileError;
       setProfile(profileData);
+      setNewUsername(profileData.username);
 
       // Fetch user's polls
       const { data: pollsData, error: pollsError } = await supabase
@@ -103,6 +111,7 @@ export default function Profile() {
         .select(`
           id,
           title,
+          body,
           created_at,
           is_anonymous,
           poll_options (id, label),
@@ -127,6 +136,7 @@ export default function Profile() {
             polls (
               id,
               title,
+              body,
               created_at,
               is_anonymous,
               author_id,
@@ -232,6 +242,74 @@ export default function Profile() {
     }
   };
 
+  const handleUpdateUsername = async () => {
+    if (!currentUser || currentUser.id !== userId) return;
+    
+    const trimmedUsername = newUsername.trim();
+    
+    if (!trimmedUsername) {
+      toast({
+        variant: "destructive",
+        title: t("profile.error"),
+        description: "Username cannot be empty",
+      });
+      return;
+    }
+
+    if (trimmedUsername === profile?.username) {
+      setIsEditDialogOpen(false);
+      return;
+    }
+
+    // Validate username format (alphanumeric, underscore, hyphen, 3-20 chars)
+    if (!/^[a-zA-Z0-9_-]{3,20}$/.test(trimmedUsername)) {
+      toast({
+        variant: "destructive",
+        title: t("profile.error"),
+        description: "Username must be 3-20 characters and contain only letters, numbers, underscores, or hyphens",
+      });
+      return;
+    }
+
+    setIsUpdatingUsername(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ username: trimmedUsername })
+        .eq("id", currentUser.id);
+
+      if (error) {
+        if (error.code === "23505") {
+          // Unique constraint violation
+          toast({
+            variant: "destructive",
+            title: t("profile.error"),
+            description: "This username is already taken",
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      setProfile((prev) => prev ? { ...prev, username: trimmedUsername } : null);
+      setIsEditDialogOpen(false);
+      toast({
+        title: t("profile.usernameUpdated"),
+        description: "Your username has been updated successfully",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: t("profile.error"),
+        description: error.message || "Failed to update username",
+      });
+    } finally {
+      setIsUpdatingUsername(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -256,50 +334,104 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-4xl">
         {/* Header with back button */}
         <Button
           onClick={() => navigate("/")}
           variant="ghost"
-          className="mb-6"
+          className="mb-4 sm:mb-6"
+          size="sm"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           {t("common.back")}
         </Button>
 
         {/* Profile Header */}
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row gap-6 items-start">
-              <Avatar className="h-24 w-24">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col md:flex-row gap-4 sm:gap-6 items-start">
+              <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
                 <AvatarImage src={profile.avatar_url || undefined} />
-                <AvatarFallback className="text-2xl">
+                <AvatarFallback className="text-xl sm:text-2xl">
                   {profile.username.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold mb-2">
-                  {profile.display_name || profile.username}
-                </h1>
-                <p className="text-muted-foreground mb-4">@{profile.username}</p>
+              <div className="flex-1 w-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold">
+                    {profile.display_name || profile.username}
+                  </h1>
+                  {isOwnProfile && (
+                    <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Change Username</DialogTitle>
+                          <DialogDescription>
+                            Update your username. This will be visible to all users.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                              id="username"
+                              value={newUsername}
+                              onChange={(e) => setNewUsername(e.target.value)}
+                              placeholder="Enter new username"
+                              maxLength={20}
+                              pattern="[a-zA-Z0-9_-]{3,20}"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              {newUsername.length}/20 characters. Use letters, numbers, underscores, or hyphens.
+                            </p>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setIsEditDialogOpen(false);
+                              setNewUsername(profile.username);
+                            }}
+                            disabled={isUpdatingUsername}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleUpdateUsername}
+                            disabled={isUpdatingUsername || newUsername.trim() === profile.username}
+                          >
+                            {isUpdatingUsername ? "Updating..." : "Update"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                </div>
+                <p className="text-muted-foreground mb-3 sm:mb-4 text-sm sm:text-base">@{profile.username}</p>
                 
                 {profile.bio && (
-                  <p className="text-foreground mb-4">{profile.bio}</p>
+                  <p className="text-foreground mb-4 text-sm sm:text-base">{profile.bio}</p>
                 )}
 
-                <div className="flex gap-4 mb-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
+                <div className="flex flex-wrap gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                     <span className="font-semibold">{followerCount}</span>
                     <span className="text-muted-foreground">{t("profile.followers")}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <span className="font-semibold">{followingCount}</span>
                     <span className="text-muted-foreground">{t("profile.following")}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                       {t("profile.joined")} {formatDistanceToNow(new Date(profile.created_at), { addSuffix: true })}
                     </span>
@@ -393,6 +525,7 @@ export default function Profile() {
                       userVote={userVote?.option_id}
                       isAnonymous={poll.is_anonymous}
                       mediaAssets={poll.media_assets || []}
+                      description={poll.body}
                       onVote={async () => {
                         await fetchProfileData();
                       }}
@@ -440,6 +573,7 @@ export default function Profile() {
                       userVote={userVote?.option_id}
                       isAnonymous={poll.is_anonymous}
                       mediaAssets={poll.media_assets || []}
+                      description={poll.body}
                       onVote={async () => {
                         await fetchProfileData();
                       }}

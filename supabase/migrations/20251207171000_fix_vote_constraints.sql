@@ -18,3 +18,4 @@ WHERE voter_user_id IS NULL AND voter_guest_id IS NULL;
 -- Since authenticated votes have voter_guest_id = NULL, they won't conflict with
 -- guest votes (which have voter_user_id = NULL).
 
+

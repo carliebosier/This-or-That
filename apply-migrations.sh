@@ -22,3 +22,4 @@ echo ""
 echo "Copy each file's contents into the Supabase Dashboard SQL Editor and run them in order."
 echo "=========================================="
 
+

@@ -232,3 +232,4 @@ If you encounter issues:
 3. Verify all migrations were applied successfully
 4. Ensure your `.env` file has the correct credentials
 
+

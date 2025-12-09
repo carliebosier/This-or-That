@@ -230,22 +230,22 @@ export default function CreatePoll() {
 
   return (
     <div className="min-h-screen gradient-subtle">
-      <div className="container mx-auto px-4 py-6 max-w-2xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-2xl">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate("/")}
-          className="mb-4"
+          className="mb-3 sm:mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {t("createPoll.cancel")}
         </Button>
 
         <Card>
-          <CardHeader>
-            <CardTitle>{t("createPoll.title")}</CardTitle>
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="text-lg sm:text-xl">{t("createPoll.title")}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4 sm:space-y-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div className="space-y-2">
@@ -272,7 +272,11 @@ export default function CreatePoll() {
                   onChange={(e) => setBody(e.target.value)}
                   placeholder="Add more context..."
                   rows={3}
+                  maxLength={250}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {body.length}/250 characters
+                </p>
               </div>
 
               {/* Options */}
