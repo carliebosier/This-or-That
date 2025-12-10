@@ -62,10 +62,14 @@ describe('CreatePoll Component', () => {
     (useToast as any).mockReturnValue({ toast: mockToast });
     
     // Mock crypto.randomUUID
-    global.crypto = {
-      ...global.crypto,
-      randomUUID: vi.fn(() => 'mock-uuid-123') as any,
-    };
+    Object.defineProperty(global, 'crypto', {
+      value: {
+        ...global.crypto,
+        randomUUID: vi.fn(() => 'mock-uuid-123'),
+      },
+      writable: true,
+      configurable: true,
+    });
     
     // Mock URL.createObjectURL
     global.URL.createObjectURL = vi.fn(() => 'mock-url');
@@ -403,8 +407,14 @@ describe('CreatePoll Component', () => {
     it('should show error when title is empty', async () => {
       renderWithRouter(<CreatePoll />);
       
-      const submitButton = screen.getByRole('button', { name: /createPoll.createPoll/i });
-      fireEvent.click(submitButton);
+      const form = screen.getByRole('button', { name: /createPoll.createPoll/i }).closest('form');
+      if (form) {
+        fireEvent.submit(form);
+      } else {
+        // Fallback to clicking submit button if form not found
+        const submitButton = screen.getByRole('button', { name: /createPoll.createPoll/i });
+        fireEvent.click(submitButton);
+      }
       
       await waitFor(() => {
         expect(mockToast).toHaveBeenCalledWith({
